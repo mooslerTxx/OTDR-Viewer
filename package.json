@@ -1,0 +1,26 @@
+{
+  "name": "otdr-viewer",
+  "version": "1.0.0",
+  "description": "simple Application to extract OTDR Information from an SOR File",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mooslerTxx/OTDR-Viewer.git"
+  },
+  "keywords": [
+    "OTDR",
+    "SOR"
+  ],
+  "author": "Marco Moosler",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mooslerTxx/OTDR-Viewer/issues"
+  },
+  "homepage": "https://github.com/mooslerTxx/OTDR-Viewer#readme",
+  "dependencies": {
+    "binary-file": "^0.2.1"
+  }
+}
