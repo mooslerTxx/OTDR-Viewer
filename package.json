@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/mooslerTxx/OTDR-Viewer#readme",
   "dependencies": {
-    "binary-file": "^0.2.1"
+    "binary-file": "^0.2.1",
+    "jsonfile": "^5.0.0",
+    "tableify": "^1.1.0"
   }
 }
