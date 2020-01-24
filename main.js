@@ -9,9 +9,10 @@ let dir = './';
 let datapath = dir + 'data';
 let filename1 = 'EXFO_FTB7400_1550_U.SOR';
 let filename2 = 'JDSU_MTS6000_1310_G.sor';
+let filename3 = 'sample1310_lowDR.sor';
 // let filepath1 = path.join(__dirname,'./data/EXFO_FTB7400_1550_U.SOR');
 
-let filepath = datapath + '/' + filename1;
+let filepath = datapath + '/' + filename3;
 let filename = path.basename(filepath);
 let basename = path.posix.basename(__dirname);
 let ext = path.extname(filepath).toUpperCase();
