@@ -7,3 +7,7 @@ otdr.hml
 data/original/*
 npm-debug.log
 yarn-error.log
+data/fileInfo.json
+data/points.json
+data/EXFO_FTB7400_1550_U.json
+data/sample1310_lowDR.json
