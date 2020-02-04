@@ -1,0 +1,26 @@
+{
+  "name": "otdr-reader",
+  "version": "1.0.0",
+  "description": "Simple Parser for reading \u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[DSOR Files \u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D.s\u001b[2SOR\u001b[2~ \u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~ \u001b[3~\u001b[\u001b[CF\u001b[2~iles\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[\u001b[3~\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mooslerTxx/OTDR-Viewer.git"
+  },
+  "keywords": [
+    "OTDR",
+    "SOR"
+  ],
+  "author": "Marco Moosler",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mooslerTxx/OTDR-Viewer/issues"
+  },
+  "homepage": "https://github.com/mooslerTxx/OTDR-Viewer#readme",
+  "dependencies": {
+    "binary-file": "^0.2.1"
+  }
+}
