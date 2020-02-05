@@ -1,6 +1,5 @@
 const SorReader = require('./lib/sor.js');
 
-
 let arg = process.argv;
 let dir = './';
 let datapath = dir + 'data';
