@@ -16,6 +16,13 @@ if (ext !== 'sor') {
     throw 'only Files with file extension ".sor" allowed';
 }
 
+let sor = new SorReader(filepath, {
+    createJson: true
+});
 
-let sor = new SorReader(filepath);
-let result = sor.parse();
+let result = "";
+const start = async function () {
+    result = await sor.parse();
+    console.log(result);
+}
+start();
