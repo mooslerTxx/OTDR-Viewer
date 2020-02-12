@@ -26,11 +26,44 @@
              let sor = new SorReader(false, {
                  browserMode: true
              }, result);
-             sor.parse();
+             let data = sor.parse();
+             data.then(function (result) {
+                 writeToDiv(result);
+             })
+
 
          }
          fr.readAsArrayBuffer(file);
-
      }
+ }
 
+ async function writeToDiv(data, waitTime = 1) {
+     return Promise.resolve()
+         .then(function () {
+
+             let result = createHtmlList(data.params)
+             // update the DOM
+             setTimeout(function () {
+                 document.getElementById('result').innerHTML += result;
+             }, waitTime);
+
+             return result;
+         });
+ }
+
+
+ function createHtmlList(data) {
+     let html = `<ul>`;
+     for (const key in data) {
+         if (data.hasOwnProperty(key)) {
+             const element = data[key];
+             if (typeof element === 'object' && element !== null) {
+                 html += `<li><b>${key}: </b>${createHtmlList(element)}</li>`;
+             } else {
+                 html += `<li><b>${key}: </b>${element}</li>`;
+             }
+         }
+     }
+     html += `</ul>`;
+     return html
  }

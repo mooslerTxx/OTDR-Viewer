@@ -20,9 +20,15 @@ let sor = new SorReader(filepath, {
     createJson: true
 });
 
-let result = "";
-const start = async function () {
+// let data = sor.parse();
+// data.then(function (result) {
+//     console.log(result);
+// })
+var result = "";
+const logResult = async function () {
     result = await sor.parse();
     console.log(result);
+
 }
-start();
+
+logResult();
