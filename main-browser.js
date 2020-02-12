@@ -21,8 +21,6 @@
          fr.onload = function (event) {
              let result = event.target.result;
 
-             //  let bin = new BinReader(result);
-             //  bin.parse();
              let sor = new SorReader(false, {
                  browserMode: true
              }, result);
@@ -30,8 +28,6 @@
              data.then(function (result) {
                  writeToDiv(result);
              })
-
-
          }
          fr.readAsArrayBuffer(file);
      }
@@ -40,13 +36,11 @@
  async function writeToDiv(data, waitTime = 1) {
      return Promise.resolve()
          .then(function () {
-
              let result = createHtmlList(data.params)
              // update the DOM
              setTimeout(function () {
                  document.getElementById('result').innerHTML += result;
              }, waitTime);
-
              return result;
          });
  }

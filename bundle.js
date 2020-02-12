@@ -2044,127 +2044,107 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 }
 
 },{}],5:[function(require,module,exports){
-const BINARY_LENGTH = {
-    'Int8': 1,
-    'UInt8': 1,
-    'Int16': 2,
-    'UInt16': 2,
-    'Int32': 4,
-    'UInt32': 4,
-    'Float': 4,
-    'Double': 8
-};
-
 class BinReader {
     constructor(data, endian = 'LE') {
-        this.data = data;
-        this.uBuffer = new Uint8Array(data);
-        this.iBuffer = new Int8Array(data);
+        this.data = data
         this.endian = endian;
-        this.cursor = 0;
+        this.cursor = 0
     }
+
+    async getArrayName(type, length) {
+        let len = length * 8
+        let name = ""
+        if (type == "uInt") {
+            name = "Uint" + len + "Array";
+        } else if (type == "Int") {
+            name = "Int" + len + "Array";
+        } else if (type == "Float") {
+            name = "Float" + len + "Array";
+        } else if (type == "BigInt") {
+            name = "BigInt" + len + "Array";
+        } else if (type == "BigInt") {
+            name = "BigUint" + len + "Array";
+        }
+        return name
+    }
+
+    async readString(len) {
+        let str = "";
+        for (let index = 0; index < len; index++) {
+            var byte = await this.readVal(1);
+            str += String.fromCharCode(byte);
+        }
+        return str;
+    }
+
     async getString() {
-        var mystr = "";
-        var byte = await this.read(1);
-        while (byte != 0) {
-            mystr += String.fromCharCode(byte);
+        var str = "";
+        var byte = await this.readVal(1);
+        while (byte != 0 && byte <= 128) {
+            str += String.fromCharCode(byte);
             byte = await this.read(1);
         }
-        return mystr;
+        return str;
     }
-    async readString(length) {
-        let name = "";
-        for (let index = 0; index < length; index++) {
-            var byte = await this.read(1);
-            name += String.fromCharCode(byte);
-        }
-        return name;
+    async readVal(length, type = "Int", position = this.cursor) {
+        let end = position + length
+        let newArrayBuffer = this.data.slice(position, end)
+        let arrName = await this.getArrayName(type, length)
+        let newArray = new window[arrName](newArrayBuffer)
+        this.cursor = end;
+        return newArray[0]
     }
-
-    async read(length, position = false, type = "Int") {
-        if (position === false) {
-            position = this.cursor;
-        }
-        let buffer = [];
-        if (type === "uInt") {
-            buffer = this.uBuffer;
-        } else {
-            buffer = this.iBuffer;
-        }
-        let endPos = position + length;
-        let bytesArr = "";
-        for (var n = position; n < endPos; ++n) {
-            let byte = buffer[n];
-            bytesArr = byte + bytesArr;
-        }
-        this.cursor = n;
-        return bytesArr;
-
+    async read(length = 1) {
+        return await this.readVal(length)
     }
 
-    // 'Int8' and 'UInt8' = length 1;'Int16' and 'UInt16' = length 2;
-    async readInt(length, position = false) {
-        let result = await this.read(length, position, "Int");
-        return parseInt(result);
+    async readInt8(position) {
+        return await this.readVal(1, "Int", position);
     }
-    async readUInt(length, position = false) {
-        let result = await this.read(length, position, "uInt");
-        return parseInt(result);
+
+    async readUInt8(position) {
+        return await this.readVal(1, "uInt", position);
+    }
+
+    async readInt16(position) {
+        return await this.readVal(2, "Int", position);
+    }
+
+    async readUInt16(position) {
+        return await this.readVal(2, "uInt", position);
+    }
+
+    async readInt32(position) {
+        return await this.readVal(4, "Int", position);
+    }
+
+    async readUInt32(position) {
+        return await this.readVal(4, "uInt", position);
+    }
+
+    async readFloat32(position) {
+        return await this.readVal(4, "Float", position);
+    }
+
+    async readFloat32(position) {
+        return await this.readVal(8, "Float", position);
+    }
+
+    async readBigInt64(position) {
+        return await this.readVal(8, "BigInt", position);
+    }
+    async readBigUint64(position) {
+        return await this.readVal(8, "BigUint", position);
     }
 
     async seek(position) {
         this.cursor = position;
         return position;
     }
-
-    async readInt8(position) {
-        let length = BINARY_LENGTH['Int8'];
-        return this.readInt(length, position);
+    async tell() {
+        return this.cursor;
     }
 
-    async readUInt8(position) {
-        let length = BINARY_LENGTH['UInt8'];
-        return this.readUInt(length, position);
-    }
-
-    async readInt16(position) {
-        let length = BINARY_LENGTH['Int16'];
-        return this.readInt(length, position);
-    }
-
-    async readUInt16(position) {
-        let length = BINARY_LENGTH['UInt16'];
-        return this.readUInt(length, position);
-    }
-
-    async readInt32(position) {
-        let length = BINARY_LENGTH['Int32'];
-        return this.readInt(length, position);
-    }
-
-    async readUInt32(position) {
-        let length = BINARY_LENGTH['UInt32'];
-        return this.readUInt(length, position);
-    }
-
-    async readFloat(position) {
-        let length = BINARY_LENGTH['Float'];
-        return this.read(length, position);
-    }
-
-    async readDouble(position) {
-        let length = BINARY_LENGTH['Double'];
-        return this.read(length, position);
-    }
-
-    // async readString(length, position) {
-    //     return new Promise((resolve) => {
-    //         this.read(length, position).then((buffer) => {
-    //             const value = buffer.toString();
-    //             resolve(value);
-    //         });
-    //     });
-    // }
 }
 
 module.exports = BinReader;
@@ -2830,10 +2810,8 @@ class Parser {
             await this.parseParams("SupParams");
             await this.parseParams("FxdParams");
             await this.parseParams("KeyEvents");
-            return (this.result);
 
             await this.parseParams("DataPts");
-
             await this.parsePoints("Points");
 
             await this.parseParams("Cksum");
@@ -2881,7 +2859,7 @@ class Parser {
                     result = await this.parseCommand(unit);
                 }
 
-                let parsedResult = await this.parseResult(result, unit);
+                let parsedResult = await this.parseResult(result, unit, obj);
                 results[unit.name] = await this.addUnit(parsedResult, unit);
                 if (unit.hasOwnProperty('func')) {
                     let resultObj = await this.callFunction(unit, obj, results, parsedResult);
@@ -2909,7 +2887,7 @@ class Parser {
         return results;
     }
 
-    async parseResult(result, unit) {
+    async parseResult(result, unit, obj) {
         if (unit.hasOwnProperty('scale')) {
             result *= unit.scale;
         }
@@ -2917,7 +2895,9 @@ class Parser {
             result = result.toFixed(unit.pres);
         }
         if (unit.hasOwnProperty('mult')) {
-            result = (result * unit.mult).toFixed(4);
+            let propName = unit.mult;
+            let multi = obj[propName];
+            result = (result * multi).toFixed(4);
         }
         return result;
     }
@@ -2933,6 +2913,7 @@ class Parser {
         await this.functionChecks(unit);
         let res = {};
         for (let index = 0; index < unit.func.length; index++) {
+
             const element = unit.func[index];
             let params = await this.getValuesFromBlock(results, unit.params[index], rThis);
             let resultObj = await ref[element](params);
@@ -2940,12 +2921,13 @@ class Parser {
                 let num = unit.numCalls[index];
                 if (unit.numCalls[index] === 'this') {
                     num = rThis;
-                } else if (!isNaN(unit.numCalls[index])) {
-                    num = results[unit.numCalls];
                 }
-
+                // else if (!isNaN(unit.numCalls[index])) {
+                //     num = results[unit.numCalls];
+                // }
                 let block = resultObj.obj;
                 let blockName = resultObj.name;
+
                 let blockResult = await this.loopBlock(num, block);
                 res[blockName] = blockResult;
 
@@ -3086,7 +3068,6 @@ class Parser {
         var val = null;
         if (nbytes == 2) {
             val = await this.bf.readUInt16();
-
         } else if (nbytes == 4) {
             val = await this.bf.readUInt32();
         } else {
@@ -3247,7 +3228,7 @@ var fs = require('fs');
 class SorReader {
     constructor(path, config = {}, data = {}) {
         this.path = path;
-        this.defaulConfig = {
+        this.defaultConfig = {
             debug: false, //Logging Infos to Console
             createJson: false, //write result in an JsonFile
             jsonPath: '.', //if createJson is true this is the path there the json file is saved
@@ -3256,7 +3237,7 @@ class SorReader {
             browserMode: false //BrowserMode
         }
         this.config = {
-            ...this.defaulConfig,
+            ...this.defaultConfig,
             ...config
         }
         this.data = data;
