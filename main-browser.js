@@ -27,12 +27,14 @@
              let data = sor.parse();
              data.then(function (result) {
                  writeToDiv(result);
+                 drawChart(result.points);
              })
          }
          fr.readAsArrayBuffer(file);
      }
  }
 
+ /** * Properties  */
  async function writeToDiv(data, waitTime = 1) {
      return Promise.resolve()
          .then(function () {
@@ -44,7 +46,6 @@
              return result;
          });
  }
-
 
  function createHtmlList(data) {
      let html = `<ul>`;
@@ -60,4 +61,39 @@
      }
      html += `</ul>`;
      return html
+ }
+
+
+ /** Chart */
+ async function transformData(data, limit = false) {
+     if (!limit) limit = data.points.length
+     let dataPoints = []
+     let pt = data.points;
+     for (var i = 0; i < limit; i += 1) {
+         dataPoints.push({
+             x: pt[i][0],
+             y: pt[i][1]
+         });
+     }
+     return dataPoints;
+ }
+
+ async function drawChart(data) {
+     var dataPointsR = await this.transformData(data);
+     var chart = new CanvasJS.Chart("chartContainer", {
+         animationEnabled: true,
+         zoomEnabled: true,
+         theme: "light2",
+         title: {
+             text: "Trace"
+         },
+         axisY: {
+             includeZero: false
+         },
+         data: [{
+             type: "line",
+             dataPoints: dataPointsR
+         }]
+     });
+     chart.render();
  }

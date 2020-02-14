@@ -10,15 +10,53 @@
 
 <body>
     <script src="./bundle.js"></script>
-    <script>
-    </script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script src="./main-browser.js"></script>
-    <h1>Test</h1>
-    <form action='#' onsubmit="return false;">
-        <input type='file' id='fileinput' accept=".sor,.SOR">
-        <input type='button' id='btnLoad' value='Load' onclick="loadFile()">
-    </form>
-    <div id="result"></div>
+    <h1>SOR-Viewer</h1>
+
+    <div class="grid-container">
+        <div class="File-Select">
+            <form action='#' onsubmit="return false;">
+                <input type='file' id='fileinput' accept=".sor,.SOR">
+                <input type='button' id='btnLoad' value='Load' onclick="loadFile()">
+            </form>
+        </div>
+        <div class="Chart" id="chartContainer" style="height: 400px; width: 100%;">Chart:</div>
+        <div class="Props" id="result">
+            Properties
+        </div>
+        <div class="Events">Events</div>
+    </div>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: 70% auto;
+            grid-template-rows: 10% 400px auto;
+            grid-template-areas: "File-Select File-Select""Chart Props""Events Props";
+            grid-column-gap: 5px;
+            grid-row-gap: 5px;
+        }
+
+        .File-Select {
+            grid-area: File-Select;
+            border: 1px solid grey;
+        }
+
+        .Chart {
+            grid-area: Chart;
+            border: 1px solid grey;
+        }
+
+        .Props {
+            grid-area: Props;
+            border: 1px solid grey;
+        }
+
+        .Events {
+            grid-area: Events;
+            border: 1px solid grey;
+        }
+    </style>
 </body>
 
 </html>

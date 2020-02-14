@@ -7,7 +7,7 @@ let sample1 = 'EXFO_FTB7400_1550_U.SOR';
 let sample2 = 'JDSU_MTS6000_1310_G.sor';
 let sample3 = 'sample1310_lowDR.sor';
 
-let filename = sample3;
+let filename = sample1;
 
 let filepath = datapath + '/' + filename;
 let ext = filename.split('.').pop().toLowerCase();
@@ -17,7 +17,8 @@ if (ext !== 'sor') {
 }
 
 let sor = new SorReader(filepath, {
-    createJson: true
+    createJson: true,
+    devMode: true
 });
 
 var result = "";
@@ -25,5 +26,4 @@ const logResult = async function () {
     result = await sor.parse();
     console.log(result);
 }
-
 logResult();
