@@ -26,22 +26,27 @@
              }, result);
              let data = sor.parse();
              data.then(function (result) {
-                 createPropertyList(result.params);
-                 console.log(result.params);
+                 this.showResults(result);
 
-                 drawChart(result.points);
-                 writeEvents(result.events, result.summary);
              })
          }
          fr.readAsArrayBuffer(file);
      }
  }
 
+ async function showResults(data) {
+     let props = await createPropertyList(data.params);
+     await this.writeToDiv(props, 'result');
+     drawChart(data.points);
+     let events = await getEvents(data.events, data.summary);
+     await writeToDiv(events, 'event-sum');
+ }
+
+
  /** * append Innerhtml  */
  async function writeToDiv(data, idName, waitTime = 1) {
      return Promise.resolve()
          .then(function () {
-             // update the DOM
              setTimeout(function () {
                  document.getElementById(idName).innerHTML += data;
              }, waitTime);
@@ -63,7 +68,7 @@
          }
      }
      html += `</ul>`;
-     await this.writeToDiv(html, 'result');
+
      return html
  }
 
@@ -86,13 +91,23 @@
      var dataPointsR = await this.transformData(data);
      var chart = new CanvasJS.Chart("chartContainer", {
          animationEnabled: true,
+         exportEnabled: true,
          zoomEnabled: true,
-         theme: "light2",
+         //  theme: "light2",
          title: {
              text: "Trace"
          },
          axisY: {
-             includeZero: false
+             title: "Refelection",
+             suffix: " dB"
+
+         },
+         axisX: {
+             title: "Distance",
+             suffix: " km"
+         },
+         toolTip: {
+             shared: true
          },
          data: [{
              type: "line",
@@ -103,21 +118,24 @@
  }
 
  /** Table Events */
- async function writeEvents(events, summary) {
-     let html = `<h3>Events</h3>`;
-     html += await createTable(events);
-     html += `<h3>Summary</h3>`;
-     html += await createTable(summary);
-     await writeToDiv(html, 'event-sum');
+ async function getEvents(events, summary) {
+     let html = ``;
+     html += await createTable(events, "Events");
+     html += await createTable(summary, "Summary");
+     return html;
  }
- async function createTable(data) {
-     let html = `<table>`;
+
+ async function createTable(data, name) {
+     let html = `<h3>${name}</h3>`;
+     html += `<table>`;
      if (Array.isArray(data)) {
          html += await getHeaders(data[0]);
      } else {
          html += await getHeaders(data);
      }
      html += await this.getTableBody(data);
+     html += `</table>`;
+
      return html
  }
  async function getTableBody(data) {

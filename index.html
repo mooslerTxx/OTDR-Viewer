@@ -21,11 +21,14 @@
                 <input type='button' id='btnLoad' value='Load' onclick="loadFile()">
             </form>
         </div>
-        <div class="Chart" id="chartContainer" style="height: 400px; width: 100%;">Chart:</div>
-        <div class="Props" id="result">
-            Properties
+        <div class="Chart" id="chartContainer" style="height: 400px; ">
+            <h3>Chart:</h3>
         </div>
-        <div class="Events" id="event-sum">Events</div>
+        <div class="Props" id="result">
+            <h3>Properties</h3>
+        </div>
+        <div class="Events" id="event-sum">
+        </div>
     </div>
     <style>
         .grid-container {
@@ -34,27 +37,37 @@
             grid-template-rows: 10% 400px auto;
             grid-template-areas: "File-Select File-Select""Chart Props""Events Props";
             grid-column-gap: 10px;
-            grid-row-gap: 5px;
+            grid-row-gap: 10px;
+        }
+
+
+        .File-Select,
+        .Chart,
+        .Props,
+        .Events {
+            border: 1px solid grey;
+            border-radius: 5px;
+            margin: 8px;
+            padding: 5px;
         }
 
         .File-Select {
             grid-area: File-Select;
-            border: 1px solid grey;
+            background-color: #F2F2F2;
         }
 
         .Chart {
             grid-area: Chart;
-            border: 1px solid grey;
         }
 
         .Props {
             grid-area: Props;
-            border: 1px solid grey;
+            background-color: #F2F2F2;
         }
 
         .Events {
             grid-area: Events;
-            border: 1px solid grey;
+            /* background-color: #F2F2F2; */
         }
 
         .Events table {
@@ -66,12 +79,29 @@
         .Events th {
             border: 1px solid #C0C0C0;
             padding: 5px;
-            background: #F0F0F0;
+            color: #FFF;
+            background: #4F81BC;
         }
 
         .Events td {
-            border: 1px solid #C0C0C0;
-            padding: 5px;
+            border: 1px solid #F5F5F5;
+            padding: 3px;
+        }
+
+        .Events tbody tr {
+            background-color: #ffffff;
+        }
+
+        .Events tbody tr:nth-child(odd) {
+            background-color: #F5F5F5;
+        }
+
+        .Events tr:hover {
+            background-color: #D8D8D8;
+        }
+
+        .Events tbody tr:nth-child(odd):hover {
+            background-color: #D8D8D8;
         }
     </style>
 </body>
