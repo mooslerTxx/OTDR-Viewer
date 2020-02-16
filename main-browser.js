@@ -26,40 +26,44 @@
              }, result);
              let data = sor.parse();
              data.then(function (result) {
-                 writeToDiv(result);
+                 createPropertyList(result.params);
+                 console.log(result.params);
+
                  drawChart(result.points);
+                 writeEvents(result.events, result.summary);
              })
          }
          fr.readAsArrayBuffer(file);
      }
  }
 
- /** * Properties  */
- async function writeToDiv(data, waitTime = 1) {
+ /** * append Innerhtml  */
+ async function writeToDiv(data, idName, waitTime = 1) {
      return Promise.resolve()
          .then(function () {
-             let result = createHtmlList(data.params)
              // update the DOM
              setTimeout(function () {
-                 document.getElementById('result').innerHTML += result;
+                 document.getElementById(idName).innerHTML += data;
              }, waitTime);
              return result;
          });
  }
 
- function createHtmlList(data) {
+ /** * Properties  */
+ async function createPropertyList(data) {
      let html = `<ul>`;
      for (const key in data) {
          if (data.hasOwnProperty(key)) {
              const element = data[key];
              if (typeof element === 'object' && element !== null) {
-                 html += `<li><b>${key}: </b>${createHtmlList(element)}</li>`;
+                 html += `<li><b>${key}: </b>${await createPropertyList(element)}</li>`;
              } else {
                  html += `<li><b>${key}: </b>${element}</li>`;
              }
          }
      }
      html += `</ul>`;
+     await this.writeToDiv(html, 'result');
      return html
  }
 
@@ -96,4 +100,60 @@
          }]
      });
      chart.render();
+ }
+
+ /** Table Events */
+ async function writeEvents(events, summary) {
+     let html = `<h3>Events</h3>`;
+     html += await createTable(events);
+     html += `<h3>Summary</h3>`;
+     html += await createTable(summary);
+     await writeToDiv(html, 'event-sum');
+ }
+ async function createTable(data) {
+     let html = `<table>`;
+     if (Array.isArray(data)) {
+         html += await getHeaders(data[0]);
+     } else {
+         html += await getHeaders(data);
+     }
+     html += await this.getTableBody(data);
+     return html
+ }
+ async function getTableBody(data) {
+     let html = `<tbody>`;
+     if (Array.isArray(data)) {
+         for (let i = 0; i < data.length; i++) {
+             const element = data[i];
+             html += `<tr>`;
+             html += await this.getTd(element);
+             html += `</tr>`;
+         }
+     } else {
+         html += `<tr>`;
+         html += await this.getTd(data);
+         html += `</tr>`;
+     }
+
+     html += `</tbody>`;
+     return html;
+ }
+
+ async function getTd(data) {
+     let html = '';
+     for (const key in data) {
+         if (data.hasOwnProperty(key)) {
+             const element = data[key];
+             html += `<td>${element}</td>`;
+         }
+     }
+     return html;
+ }
+ async function getHeaders(data) {
+     let html = `<thead><tr>`;
+     for (const key in data) {
+         html += `<th>${key}</th>`;
+     }
+     html += `</tr></thead>`;
+     return html;
  }

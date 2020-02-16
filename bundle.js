@@ -2126,7 +2126,7 @@ class BinReader {
         return await this.readVal(4, "Float", position);
     }
 
-    async readFloat32(position) {
+    async readFloat64(position) {
         return await this.readVal(8, "Float", position);
     }
 
@@ -2547,6 +2547,7 @@ class Keyevent {
             "func": ['loopEvents', 'getSummary'],
             "numCalls": ['this', 1],
             "result": "numCalls",
+            "propNames": ["events", "summary"],
             "params": [
                 ['FxdParams.ior',
                     'FxdParams.sol'
@@ -2815,10 +2816,8 @@ class Parser {
             await this.parsePoints("Points");
 
             await this.parseParams("Cksum");
-
             // console.log(this.result);
             // console.log(this.fileInfo);
-
             if (!this.config.browserMode) await this.bf.close();
             if (this.config.debug) console.log('File closed');
             return (this.result);
@@ -2878,6 +2877,7 @@ class Parser {
         if (unit["result"] == "append") {
             results = await this.setBlockInfo(unit, newRes, results);
         } else if (unit["result"] == "numCalls") {
+
             let keys = Object.keys(newRes);
             for (let index = 0; index < keys.length; index++) {
                 const element = keys[index];
@@ -2929,8 +2929,12 @@ class Parser {
                 let blockName = resultObj.name;
 
                 let blockResult = await this.loopBlock(num, block);
-                res[blockName] = blockResult;
-
+                if (unit.hasOwnProperty('propNames')) {
+                    let propName = unit.propNames[index];
+                    this.result[propName] = blockResult;
+                } else {
+                    res[blockName] = blockResult;
+                }
             } else {
                 res = {
                     ...resultObj
@@ -3025,7 +3029,7 @@ class Parser {
         if (!(name in info)) {
             throw ("blockName " + name + " not found!");
         }
-        if (info[name]['version'] != 2) {
+        if (info[name]['version'] < 2) {
             throw ("currently only Version 2 allowed!");
         }
         await this.bf.seek(info[name]['pos']);
@@ -3037,7 +3041,7 @@ class Parser {
 
     async setVersion() {
         this.fileInfo.version = await this.getVersion();
-        if (this.fileInfo.version != 2) throw ('at this moment only Version 2 is supported');
+        if (this.fileInfo.version < 2) throw ('at this moment only Version 2 is supported');
         this.fileInfo.fullversion = await this.getFullVersion();
     }
     async setMap() {
