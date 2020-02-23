@@ -1,5 +1,7 @@
 //https://stackoverflow.com/questions/3146483/html5-file-api-read-as-text-and-binary
 
+const trPrefix = "t_";
+
 function loadFile() {
   var input, file, fr;
 
@@ -7,7 +9,7 @@ function loadFile() {
     bodyAppend("p", "The file API isn't supported on this browser yet.");
     return;
   }
-
+  clearDivs();
   input = document.getElementById("fileinput");
   if (!input) {
     bodyAppend("p", "Um, couldn't find the fileinput element.");
@@ -38,6 +40,13 @@ function loadFile() {
     };
     fr.readAsArrayBuffer(file);
   }
+}
+
+function clearDivs() {
+  let divs = ["result", "event-sum"];
+  divs.forEach(element => {
+    document.getElementById(element).innerHTML = "";
+  });
 }
 
 async function showResults(data) {
@@ -91,7 +100,13 @@ async function getMarkers(events, type = "xAxis", y = 30) {
       let distance = Number.parseFloat(element.distance).toFixed(2);
       if (type === "xAxis") {
         obj = {
-          xAxis: distance
+          name: element.number,
+          xAxis: distance,
+          label: {
+            formatter: function(param) {
+              return [param.name];
+            }
+          }
         };
       } else {
         obj = {
@@ -103,7 +118,6 @@ async function getMarkers(events, type = "xAxis", y = 30) {
       markers.push(obj);
     }
   }
-
   return markers;
 }
 /**Apache Echart */
@@ -117,7 +131,14 @@ function drawEchart(points, markers) {
       text: "OTDR Trace Graph"
     },
     tooltip: {
-      trigger: "axis"
+      trigger: "axis",
+      formatter: function(param) {
+        param = param[0];
+        return [
+          "dB: " + param.data[1] + '<hr size=1 style="margin: 3px 0">',
+          "km: " + param.data[0] + "<br/>"
+        ].join("");
+      }
     },
     toolbox: {
       feature: {
@@ -126,10 +147,21 @@ function drawEchart(points, markers) {
       }
     },
     xAxis: {
-      name: "distance"
+      name: "Distance (km)",
+      nameTextStyle: {
+        fontWeight: "bold"
+      },
+      splitNumber: 10
     },
     yAxis: {
-      name: "Refelction"
+      name: "Refelction (dB)",
+      nameTextStyle: {
+        fontWeight: "bold"
+      },
+      max: function(value) {
+        return value.max + 10;
+      }
+      // splitNumber: 10
     },
     dataZoom: [
       {
@@ -167,25 +199,33 @@ function drawEchart(points, markers) {
         // },
         markLine: {
           silent: false,
+          symbol: "none",
           data: markers
         }
       }
     ]
   };
   myChart.setOption(option);
+
+  /** Event Handling */
+  myChart.on("mouseover", function(params) {
+    let arrIndex = parseInt(params.name);
+    let id = trPrefix + arrIndex;
+    highlight_row(id);
+  });
 }
 
 /** Table Events */
 async function getEvents(events, summary) {
   let html = ``;
-  html += await createTable(events, "Events");
-  html += await createTable(summary, "Summary");
+  html += await createTable(summary, "Summary", "sum-table");
+  html += await createTable(events, "Events", "event-table");
   return html;
 }
 
-async function createTable(data, name) {
+async function createTable(data, name, id = "") {
   let html = `<h3>${name}</h3>`;
-  html += `<table>`;
+  html += `<table id='${id}'>`;
   if (Array.isArray(data)) {
     html += await getHeaders(data[0]);
   } else {
@@ -201,7 +241,11 @@ async function getTableBody(data) {
   if (Array.isArray(data)) {
     for (let i = 0; i < data.length; i++) {
       const element = data[i];
-      html += `<tr>`;
+      let id = "";
+      if (element.hasOwnProperty("number")) {
+        id = trPrefix + element.number;
+      }
+      html += `<tr class='${id}'>`;
       html += await this.getTd(element);
       html += `</tr>`;
     }
@@ -232,4 +276,19 @@ async function getHeaders(data) {
   }
   html += `</tr></thead>`;
   return html;
+}
+
+function highlight_row(className) {
+  unHighlightAllRoWs();
+  var row = document.getElementsByClassName(className);
+  if (row) {
+    row[0].className += " selected";
+  }
+}
+function unHighlightAllRoWs(idName = "event-table") {
+  var table = document.getElementById(idName);
+  var rows = table.getElementsByTagName("tr");
+  for (var row = 0; row < rows.length; row++) {
+    rows[row].classList.remove("selected");
+  }
 }
