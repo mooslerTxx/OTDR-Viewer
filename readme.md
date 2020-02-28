@@ -41,7 +41,7 @@ The following values can be set:
 * browserMode: false        //BrowserMode
 
 ## Questions
-For questions and support please [mail me](moosler@gmx.de). 
+For questions and support please mail me <moosler@gmx.de>
 
 ## Issues
 
