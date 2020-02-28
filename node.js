@@ -15,14 +15,17 @@ let ext = filename
   .pop()
   .toLowerCase();
 
+let config = {
+    createJson: true,
+    devMode: true
+}
+
 if (ext !== "sor") {
   throw 'only Files with file extension ".sor" allowed';
 }
 
-let sor = new SorReader(filepath, {
-  createJson: true,
-  devMode: true
-});
+
+let sor = new SorReader(filepath, config);
 
 var result = "";
 const logResult = async function() {

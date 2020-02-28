@@ -1,6 +1,9 @@
 //https://stackoverflow.com/questions/3146483/html5-file-api-read-as-text-and-binary
 
 const trPrefix = "t_";
+const config = {
+  browserMode: true
+};
 
 function loadFile() {
   var input, file, fr;
@@ -26,11 +29,10 @@ function loadFile() {
     fr.onload = function(event) {
       let result = event.target.result;
 
+   
       let sor = new SorReader(
         false,
-        {
-          browserMode: true
-        },
+        config,
         result
       );
       let data = sor.parse();
