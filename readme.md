@@ -43,7 +43,8 @@ The following values can be set:
 ## Questions
 For questions and support please mail me <moosler@gmx.de>
 
-## Issues
+## Knwon Issues
+* SOR Version 1 not supported yet
 
 ## License
 [MIT](http://opensource.org/licenses/MIT)
